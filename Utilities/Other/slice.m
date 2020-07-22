@@ -1,3 +1,6 @@
-function Y = slice(X,S)
-Y=cellfun(@(x)squeeze(X{1}(x{:})).',S,'UniformOutput',false);
+function Y = slice(X,dim)
+nd=ndims(X);
+dlist=1:nd;
+sdims=setdiff(dlist,dim);
+Y=num2cell(X,sdims);
 end

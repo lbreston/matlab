@@ -1,4 +1,20 @@
-function [Z]=dimfun(FuncIn,X,dim)
+% dimfun applies a function along a given dimension of multdimensional arrays 
+
+% inputs
+% X: a cell array of M, N dimensional, numerical arrays. The arrays must all have the same size
+% Dim: Dimension the function is applied to.  The default is the last dimension
+% FuncIn: function to be applied to the arrays. Must be an anonymous functions with M inputs 
+
+%Ouputs
+%Y is an N-1 dimensional array such that
+%Y(i1,i2,..i(N-1))=FuncIn(X{1}(i1,i2...i(N)),X{2}(i1,i2...i(N))...X{M}) where i(Dim) = :
+%If FuncIn returns a scalar Y is concatenated into a numerical array otherwise Y is returned as a cell array.
+
+
+function [Y]=dimfun(FuncIn,X,dim)
+if ~isa(X,'cell')
+    X={X};
+end
 nd=ndims(X{1});
 if nargin==2
     dim = nd;
@@ -16,7 +32,7 @@ dlist=1:nd;
 sdim=setdiff(dlist,dim);
 S(sdim)=size(Ycell,sdim);
 S(dim)=numel(Ycell{1});
-Z=zeros(S);
+Y=zeros(S);
 
 idx=cell(1,numel(sdim));
 [idx{:}]=ind2sub(S,[1:prod(S)]);
@@ -27,9 +43,9 @@ for i=1:numel(Ycell)
     end
     idxtemp2=[num2cell(idxtemp)];
     idxtemp2=[idxtemp2(1:dim-1),':',idxtemp2(dim+1:end)];
-    Z(idxtemp2{:})=Ycell{i};
+    Y(idxtemp2{:})=Ycell{i};
 end
 catch
-    Z=Ycell;
+    Y=Ycell;
 end
 end

@@ -1,5 +1,6 @@
 %% Build Pipes
 clear all
+
 % Fourier pipe
 Fourier.Frequency_Band= @(obj)pipe.initval('Requires Input');
 Fourier.Signal = @(obj)pipe.initval('Requires Input');
@@ -8,6 +9,7 @@ Fourier.Gabor_Spectrogram = @(obj)treefun(@(x)dimfun(@(y)gaborSpec(y,1000),{x},2
 Fourier.Filtered_Signal= @(obj)treefun(@(x)filtifft(x,@(f)(f>=obj.Frequency_Band(1)&f<=obj.Frequency_Band(2)),1000,2),obj.Fourier_Transform);
 
 Fourier=pipe(Fourier);
+save('Fourier','Fourier');
 
 %PAC pipe
 PAC.Signal = @(obj)pipe.initval('Requires Input');
@@ -20,15 +22,16 @@ PAC.Abs_band=@(obj)pipe.initval('Requires Input');
 PAC.Phase_FT=@(obj){'Frequency_Band',obj.Phase_band,'Signal',obj.Signal,'Filtered_Signal',[]}|Fourier;
 PAC.Abs_FT=@(obj){'Frequency_Band',obj.Abs_band,'Signal',obj.Signal,'Filtered_Signal',[]}|Fourier;
 PAC.Phase_Signal=@(obj)obj.Phase_FT.Filtered_Signal;
-PAC.Abs_Signal=@(obj)obj.Phase_FT.Filtered_Signal;
+PAC.Abs_Signal=@(obj)obj.Abs_FT.Filtered_Signal;
 PAC.Phase= @(obj)treefun(@(x)angle(hilbert(x.').'),obj.Phase_Signal);
 PAC.Abs= @(obj)treefun(@(x)abs(hilbert(x.').'),obj.Abs_Signal);
-PAC.PAC=@(obj)catleaves(treefun2(@(x,y)tuplefun(@(w,z)modulationIndex(w,z),{x,y},2),obj.Phase,obj.Abs),3);
-PAC.movPAC=@(obj)catleaves(treefun2(@(x,k,o)movfun(@(x)tuplefun(@(w,z)modulationIndex(w,z),{x,y},2),x,k,o),obj.Phase,obj.Abs,{obj.window,obj.overlap}),4);
+PAC.PAC=@(obj)catleaves(treefun(@(x,y)tuplefun(@(w,z)modulationIndex(w,z),{x,y},1),{obj.Phase,obj.Abs}),3);
+PAC.movPAC=@(obj)catleaves(treefun(@(x,k,o)movfun(@(x)tuplefun(@(w,z)modulationIndex(w,z),{x,y},2),x,k,o),obj.Phase,obj.Abs,{obj.window,obj.overlap}),4);
 
 PAC=pipe(PAC);
+save('PAC','PAC');
 
-
+%CCSpipe
 CCS.Signal =@(obj)pipe.initval('Requires Input');
 CCS.tau=@(obj)pipe.initval('Requires Input');
 CCS.dim=@(obj)pipe.initval('Requires Input');
@@ -41,8 +44,8 @@ CCS.movCCS=@(obj)partreefun(@(x,l,t,d,k,o)movpwCCS({x,x},l,t,d,k,o),obj.Signal,{
 CCSpipe=pipe(CCS);
 
 save('CCSpipe','CCSpipe');
-save('Fourier','Fourier');
-save('PAC','PAC');
+
+
 
 %% Running PAC Pipe
 clear all 
@@ -67,7 +70,7 @@ PAC.PAC;
 mPAC=treefun(@(x)mean(x,3),PAC.PAC);
 
 %% clear the pipe if you want to recalculate values 
-PCA.setvals([],'all')
+PAC.clear('all')
 
 %% Run CCS on filtered LFPs
 clear all 
