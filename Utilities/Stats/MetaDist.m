@@ -7,13 +7,10 @@ end
 if isempty(k)
     k=size(data,dim);
 end
-dSize=size(data);
-dSize(dim)=n;
-dist=zeros(dSize);
+distcell=cell(n);
 for i=1:n
     S=datasample(data,k,dim);
-    slice = repmat({':'},1,n);
-    slice{dim}=i;
-    dist(slice{:})=stat(S);
+    distcell{i}=stat(S);
 end
+  dist = cat(ndims(distcell{1})+1,distcell{:});
 end

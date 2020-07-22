@@ -12,7 +12,6 @@ dlist=1:nd;
 sdim=setdiff(dlist,dim);
 S=cellfun(@(x)size(x,sdim),X,'UniformOutput',true);
 Y=cell(S);
-Z=[];
 idx=cell(1,numel(X));
 [idx{:}]=ind2sub(size(Y),[1:numel(Y)]);
 Xsplit=cellfun(@(x)num2cell(x,dim),X,'UniformOutput',false);
@@ -30,8 +29,11 @@ for i=1:numel(Y)
     end
     
 end
-
+try
 Z=zeros([S,numel(Y{2})]);
+catch
+    Z=zeros(S);
+end
 for i=1:numel(Y)
     for j=1:numel(idx)
         idxtemp(j)=idx{1,j}(i);

@@ -20,7 +20,7 @@ Z=zeros(S);
 
 idx=cell(1,numel(sdim));
 [idx{:}]=ind2sub(S,[1:prod(S)]);
-
+try
 for i=1:numel(Ycell)
     for j=1:numel(idx)
         idxtemp(j)=idx{1,j}(i);
@@ -28,5 +28,8 @@ for i=1:numel(Ycell)
     idxtemp2=[num2cell(idxtemp)];
     idxtemp2=[idxtemp2(1:dim-1),':',idxtemp2(dim+1:end)];
     Z(idxtemp2{:})=Ycell{i};
+end
+catch
+    Z=Ycell;
 end
 end

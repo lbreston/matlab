@@ -1,32 +1,23 @@
-function [Y]=treefun(FuncIn,X,loc)
-if nargin<3
-    loc={};
-end
+function [Y]=treefun(FuncIn,X,params)
 
+if nargin<3
+    params={};
+end
 try
     assert(~isa(X,'struct'));
-    if nargin(FuncIn)==1
-            Y=FuncIn(X);
-        else
-            Y=FuncIn(X,loc);
-    end
+    Y=FuncIn(X,params{:});
 catch
-fields=fieldnames(X);
-for idx = 1:numel(fields)
-    D=(X.(fields{idx}));
-    loc=[loc,fields(idx)];
-    loc=loc(~cellfun('isempty',loc));
-    try
-        if nargin(FuncIn)==1
-            Y.(fields{idx})=FuncIn(D);
-        else
-            Y.(fields{idx})=FuncIn(D,loc);
+    fields=fieldnames(X);
+    for idx = 1:numel(fields)
+        D=(X.(fields{idx}));
+        try
+            assert(~isa(D,'struct'));
+            Y.(fields{idx})=FuncIn(D,params{:});
+            
+        catch
+            Y.(fields{idx})=treefun(FuncIn,D,params);
         end
-        loc={};
-    catch
-        Y.(fields{idx})=treefun(FuncIn,D,loc);
     end
-end
 end
 
 end

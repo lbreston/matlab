@@ -1,8 +1,25 @@
-function [Y]=partreefun(FuncIn,X,extract)
-if nargin<3
+function [Y]=partreefun(FuncIn,X,params,create,extract)
+if nargin<5
     extract=true;
 end
-yf=partreefunFuture(FuncIn,X);
+if nargin<4
+    extract=true;
+    create=true;
+end
+if nargin<3
+    params={};
+    extract=true;
+    create=true;
+end
+
+
+p = gcp('nocreate');
+if (~create&&isempty(p))
+    Y=treefun(FuncIn,X,params);
+    return
+end
+
+yf=partreefunFuture(FuncIn,X,params);
 f=catleaves(yf,1,true);
 YFuture = afterAll(f, @(~)treefun(@(x)errSafeFetchOutputs(x),yf), 1,'PassFuture',true);
 if extract
@@ -11,19 +28,15 @@ else
     Y=YFuture;
 end
 end
-function [yf]=partreefunFuture(FuncIn,X,loc)
+function [yf]=partreefunFuture(FuncIn,X,params,loc)
 
-if nargin<3
+if nargin<4
     loc={};
 end
 
 try
     assert(~isa(X,'struct'));
-    if nargin(FuncIn)==1
-        yf=parfeval(FuncIn,1,X);
-    else
-        yf=parfeval(FuncIn,1,X,loc);
-    end
+    yf=parfeval(FuncIn,1,X,params{:});
 catch
     fields=fieldnames(X);
     for idx = 1:numel(fields)
@@ -32,14 +45,10 @@ catch
         loc=loc(~cellfun('isempty',loc));
         try
             assert(~isa(D,'struct'));
-            if nargin(FuncIn)==1
-                yf.(fields{idx})=parfeval(FuncIn,1,D);
-            else
-                yf.(fields{idx})=parfeval(FuncIn,1,D,loc);
-            end
+            yf.(fields{idx})=parfeval(FuncIn,1,D,params{:});
             loc={};
         catch
-            yf.(fields{idx})=partreefunFuture(FuncIn,D,loc);
+            yf.(fields{idx})=partreefunFuture(FuncIn,D,params,loc);
         end
     end
 end
