@@ -1,7 +1,7 @@
 % partreefun is a parallel version of treefun which evaluates FuncIn on all of the leaves in parallel 
-% Since trees are acyclic the operations are guaranteed to be independent and any treefun can be parallelized. 
+% Since trees are acyclic the operations are guaranteed to be independent meaning any treefun can be parallelized. 
 
-% inputs 
+% Inputs 
 % create: If create is true partreefun will create a parallel pool, if one does not already exist, and execute in parallel. 
 % If create is false partreefun will only execute in parallel if a pool already exists and otherwise calls treefun. 
 % The default value of create is true. 
@@ -66,4 +66,13 @@ catch
     end
 end
 
+end
+
+function [O]=errSafeFetchOutputs(F)
+assert(~isa(F,'struct'));
+try 
+    O=fetchOutputs(F);
+catch
+    O=[];
+end
 end

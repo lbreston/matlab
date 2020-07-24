@@ -1,33 +1,34 @@
 % The pipe class uses dynamically defined properties to efficiently create and manage analysis pipelines. 
-
+ 
 % A pipe consists of properties, their values, and the functions used to compute them
-% A pipe's visible properties are dependent, meaning they can not store data and are calculated on demand 
-% The functions for computing the visibile properties are stored in the hidden "functions" property which has the form functions.property = @(obj)Func(obj)
-% The values of the visibile properties are stored in the hidden "values" property which has the form values.property = val
-
+% A pipe's visible properties are dependent, meaning they cannot store data and are calculated on demand 
+% The functions for computing the visible properties are stored in the hidden "functions" property which has the form functions.property = @(obj)Func(obj)
+% The values of the visible properties are stored in the hidden "values" property which has the form values.property = val
+ 
 % When a visible property is set, the assigned value is stored in values.property 
 % When a visible property is called, the pipe will either return the stored value, or, if its empty, return functions.property(obj) and store the computed value
 % This design allows for variables within a pipeline to be addressed on demand, while avoiding redundant calculations.
-
+ 
 % To recompute values, they must first be cleared. This can done by setting them to [] or using obj.clear()
-
+ 
 % A pipe is created from a struct, S, of function handles
 % S has the form S.PropertyName = @(obj)Function(). The functions must have "obj" as their only input
 % To define properties which require external input use the function @(obj)pipe.initval('Requires Input');
 % To define functions which reference other properties within the pipe use the form @(obj)Function(obj.Prop1,obj.Prop2...)
 % pipe(S) constructs a pipe with visible properties of the field names of S, and builds their corresponding get and set methods. 
-
+ 
 % Saving a pipe only saves the pipe definition and not the property values.
-
+ 
 % The syntax Input|pipe and pipe|Output can be used to interface with pipes.  
 % Inputs must either be a struct with the format S.PropertyName = Val  or a cell array with the format {'PropertyName',val,'PropertyName',val}
 % Input|pipe returns a pipe with properties set to the Input values
 % Outputs must either be a struct with the format S.field = 'PropertyName'  or a cell array with the format {'fieldname','PropertyName','fieldname','PropertyName'}
 % pipe|Output returns a struct with the format S.field = pipe.PropertyName.
 % These commands are evaluated from left to right which allows pipes to be daisy chained together. i.e. I|pipe1|O|pipe2... 
-
+ 
 % The syntax pipe3=pipe1>pipe2 or pipe3=join(pipe1,pipe2) can be used to combine pipes. pipe3 contains all the properties of both pipes. 
 % If pipe1 and pipe2 have a property with the same name the definition from pipe1 is used. 
+
 
 
 

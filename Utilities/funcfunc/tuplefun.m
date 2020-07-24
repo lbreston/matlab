@@ -1,5 +1,5 @@
-% tuplefun applies a function to all the permutations of slices of M multidimensional arrays 
-
+% tuplefun applies an arbitrary function to all the permutations of slices of slices M multidimensional arrays 
+ 
 % Inputs
 % X: a cell array of M numerical arrays. 
 % Dim: Dimension along which the arrays are sliced 
@@ -8,17 +8,18 @@
 % FuncOut: 1x2 cell array of functions for indexing the outputs of FuncIn.
 % FuncOut{1} converts the outputs of FuncIn to a cell array.
 % FuncOut{2} generates an array of indicies such that Z(FuncOut{2}(i))=FuncOut{1}{i})
-% This is useful to take advandage of redundant function outputs 
-
-% Ouputs
+% This is useful to take advantage of redundant function outputs 
+ 
+% Outputs
 % Z is an M+S dimensional numerical array or M dimensional cell array. 
 % if cell is true Z{i1,i2,...i(M)}=FuncIn(X{1}(i1),X{2}(i2)...X{M}) where X{j}(i) is the ith slice of X{j} along the Dim dimension. 
 % if cell is false Z(i1,i2,...i(M),S)=FuncIn(X{1}(i1),X{2}(i2)...X{M}) where X{j}(i) is the ith slice of X{j} along the Dim dimension.
-
+ 
 % Example
 % If X={X1,X2} with sizes R1xC1, R2xC2 respectively 
 % if Dim = 1 size(Z) = [R1,R2,...] and Z(i,j,...)=FuncIn(X1(i,:),X2(j,:))
 % if Dim = 2 size(Z) = [C1,C2,...]  Z(i,j,...)=FuncIn(X1(:,i),X2(:,j)) 
+
 
 
 function [Z]=tuplefun(FuncIn,X,dim,cellout,FuncOut)
@@ -68,4 +69,12 @@ for i=1:numel(Y)
 end
 
 end
+
+function Y = slice(X,dim)
+nd=ndims(X);
+dlist=1:nd;
+sdims=setdiff(dlist,dim);
+Y=num2cell(X,sdims);
+end
+
 

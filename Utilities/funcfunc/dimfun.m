@@ -1,14 +1,15 @@
-% dimfun applies a function along a given dimension of multdimensional arrays 
+% dimfun applies an arbitrary function to a chosen dimension of
+% multidimensional arrays. If the function requires multiple variable inputs, each input must have its own array. 
 
-% inputs
+% Inputs
 % X: a cell array of M, N dimensional, numerical arrays. The arrays must all have the same size
 % Dim: Dimension the function is applied to.  The default is the last dimension
-% FuncIn: function to be applied to the arrays. Must be an anonymous functions with M inputs 
-
-%Ouputs
-%Y is an N-1 dimensional array such that
-%Y(i1,i2,..i(N-1))=FuncIn(X{1}(i1,i2...i(N)),X{2}(i1,i2...i(N))...X{M}) where i(Dim) = :
-%If FuncIn returns a scalar Y is concatenated into a numerical array otherwise Y is returned as a cell array.
+% FuncIn: function to be applied to the arrays. FuncIn must be an anonymous functions with M inputs 
+ 
+% Outputs
+% Y is an N-1 dimensional array such that
+% Y(i1,i2,..i(N-1))=FuncIn(X{1}(i1,i2...i(N)),X{2}(i1,i2...i(N))...X{M}) where i(Dim) = :
+% If FuncIn returns a scalar Y is concatenated into a numerical array, otherwise Y is returned as a cell array.
 
 
 function [Y]=dimfun(FuncIn,X,dim)

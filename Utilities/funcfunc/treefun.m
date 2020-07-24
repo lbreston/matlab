@@ -1,14 +1,15 @@
-% treefun applies a function to the leaves of a structure with a tree topology
-
-% inputs
-% X: a cell array of M, structs. Each struct must have the topology of a tree with the terminal nodes containing data.
+% treefun applies an arbitrary function to the leaves of a struct with a tree topology. 
+% If the function requires multiple variable inputs, each input must have its own structure.
+ 
+% Inputs
+% X: a cell array of M, structs. Each struct must have the topology of a tree with the terminal fields containing data.
 % All of the structs must have the same field names.
 % FuncIn: function to be applied to the leaves. Must be an anonymous function with M+numel(params) inputs
-% Params: cell array of function parameters
-
-% Ouputs
-% Y is a struct with the same fields as those in X.
-% Y.(leaf)=FuncIn(X{:}.(leaf),params{:}) where .(leaf) represents the path to a terminal node.
+% Params: cell array of fixed function parameters
+ 
+% Outputs
+% Y is a struct with the same fieldnames as those in X.
+% Y.(leaf)=FuncIn(X{:}.(leaf),params{:}) where .(leaf) represents the path to a terminal field.
 
 
 function [Y]=treefun(FuncIn,X,params)
