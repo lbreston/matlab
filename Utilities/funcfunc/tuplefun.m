@@ -25,7 +25,7 @@
 function [Z]=tuplefun(FuncIn,X,dim,cellout,FuncOut)
 if nargin<5
     outY=@(w){w};
-    outI=@(z,s)sub2ind(s,z(1),z(2));
+    outI=@(s,z)sub2ind(s,z{:});
 else
     outY=FuncOut{1};
     outI=FuncOut{2};
@@ -43,9 +43,9 @@ for i=1:numel(Y)
     if isempty(Y{i})
         for j=1:numel(Xsplit)
             xtemp{j}=Xsplit{1,j}{idx{1,j}(i)};
-            idxtemp(j)=idx{1,j}(i);
+            idxtemp{j}=idx{1,j}(i);
         end
-        oI=outI(idxtemp,S);
+        oI=outI(S,idxtemp);
         oY=outY(FuncIn(xtemp{:}));
         for k=1:numel(oI)
             Y{oI(k)}=oY{k};
@@ -62,9 +62,9 @@ end
 Z=zeros([S,size(Y{1})]);
 for i=1:numel(Y)
     for j=1:numel(idx)
-        idxtemp(j)=idx{1,j}(i);
+        idxtemp{j}=idx{1,j}(i);
     end
-    idxtemp2=[num2cell(idxtemp),':'];
+    idxtemp2=[idxtemp,':'];
     Z(idxtemp2{:})=Y{i};
 end
 

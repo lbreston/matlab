@@ -12,7 +12,10 @@
 % If FuncIn returns a scalar Y is concatenated into a numerical array, otherwise Y is returned as a cell array.
 
 
-function [Y]=dimfun(FuncIn,X,dim)
+function [Y]=dimfun(FuncIn,X,dim,params)
+if nargin<4
+    params={};
+end
 if ~isa(X,'cell')
     X={X};
 end
@@ -25,7 +28,7 @@ Xrd=cellfun(@(x)num2cell(x,dim),X,'UniformOutput',false);
 Ycell=cell(size(Xrd{1}));
 for i=1:numel(Ycell)
     temp=cellfun(@(x)cellfun(@(y)squeeze(y),x(i),'UniformOutput',false),Xrd);
-    Ycell{i}=FuncIn(temp{:});
+    Ycell{i}=FuncIn(temp{:},params{:});
 end
 
 

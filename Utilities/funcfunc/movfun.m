@@ -1,6 +1,6 @@
-% movfun applies an abitrary function to a moving window along a choosen dimension of multdimensional arrays. 
+% movfun applies an arbitrary function to a moving window along a chosen dimension of multidimensional arrays. 
 % If the function requires multiple variable inputs, each input must have its own array.
-
+ 
 % Inputs
 % X: a cell array of M, N dimensional, numerical arrays. The arrays must all have the same size
 % k: size of moving window
@@ -8,11 +8,12 @@
 % Dim: Dimension along which the window is moved
 % CatDim: Dimension along which the moving results are concatenated 
 % FuncIn: function to be applied to the arrays. Must be an anonymous functions with M inputs 
-
+ 
 % Ouputs
 % t the array of locations of the centers of the moving windows.  
 % Y array of moving function outputs 
 % Y(i)=FuncIn(X{1}(i1,i2...i(N)),X{2}(i1,i2...i(N))...X{M}) where i(Dim) = (t(i)-k/2):(t(i)+k/2)
+
 
 function [Y, t]=movfun(FuncIn,X,k,o,dim,catdim)
 if ~isa(X,'cell')

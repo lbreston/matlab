@@ -16,9 +16,12 @@ function [Y]=treefun(FuncIn,X,params)
 if ~isa(X,'cell')
     X={X};
 end
+
 if nargin<3
     params={};
+
 end
+
 try
     assert(~isa(X{1},'struct'));
     Y=FuncIn(X{:},params{:});

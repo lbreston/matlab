@@ -1,3 +1,4 @@
+%Filtered Signal
 function Y=filtifft(X,freqfilt,fs,dim)
 L=size(X,dim);
 f = fs*linspace(0,1,L); 

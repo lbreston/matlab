@@ -1,3 +1,4 @@
+%Gabor Spectrogram
 function [Y]=gaborSpec(X,fs)
 NFFT    = 800; 
 tw      = -NFFT/2+1:NFFT/2;
